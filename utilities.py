@@ -34,3 +34,6 @@ def st(style: str, msg: str) -> str:
             f"No style available to transform the string {msg}"
         )
         exit(1)
+
+def format_es(n, decimals=2):
+    return f"{n:,.{decimals}f}".replace(",", " ")

@@ -169,16 +169,13 @@ def calculate_loan(
 
     # Print Values
     if verbose:
-        interest_total_formated = f"{interest_total:,.2f}"
-        quota_formated = f"{quota * 12:,.2f}"
-        quota_month_formated = f"{quota:,.2f}"
         print(
             "*******************************************\n"
-            f"r annual            = {12 * 100 * r}%\n"
-            f"Fixed annual quota  = {quota_formated}€\n"
-            f"Fixed monthly quota = {quota_month_formated}€\n"
-            f"Total Interests     = {interest_total_formated}€ "
-            f"({round(100 * interest_total / loan_ammount, 2)}%)\n"
+            f"r annual            = {12 * 100 * r} %\n"
+            f"Fixed annual quota  = {ut.format_es(12 * quota)} €\n"
+            f"Fixed monthly quota = {ut.format_es(quota)} €\n"
+            f"Total Interests     = {ut.format_es(interest_total)} € "
+            f"({round(100 * interest_total / loan_ammount, 2)} %)\n"
             "*******************************************\n"
         )
 

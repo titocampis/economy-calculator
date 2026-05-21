@@ -1,7 +1,11 @@
 from calculators import loan_calculator as lc
-from utilities import st
+import utilities as ut
 
-# Config
+#########################################################################################
+#
+# Variables
+#
+#########################################################################################
 principal = 90000
 period = "year"  # month / year
 N = 10  # total number of months / years
@@ -12,18 +16,27 @@ CSV_FILE = "files/loan.csv"
 
 plot = True
 
-# Adjust r and N to period
+#########################################################################################
+#
+# / Variables
+#
+#########################################################################################
+
+#########################################################################################
+#
+# Main
+#
+#########################################################################################
+# Adjust r and N to selected period
 r = r / 1200  # Compound interest always calculated monthly
 if period.lower() == "year":
     N = N * 12
 elif period.lower() == "month":
     pass
 else:
-    print(st("error", "Invalid Period"))
+    print(ut.st("error", "Invalid Period"))
     exit(1)
 
-
-# Main
 lc.calculate_loan(
     principal,
     N,
@@ -34,3 +47,9 @@ lc.calculate_loan(
     verbose=True,
     plot=plot,
 )
+
+#########################################################################################
+#
+# / Main
+#
+#########################################################################################

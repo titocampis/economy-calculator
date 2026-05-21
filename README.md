@@ -21,6 +21,7 @@ Sure, here is the index for your markdown:
     - [4.2 Completely Balance breakdown for fixed loan years](#42-completely-balance-breakdown-for-fixed-loan-years)
       - [Configuration](#configuration-4)
       - [Execution](#execution-4)
+5. [IRPF Spain / Catalonia Calculator](#5-irpf-spain--catalonia-calculator)
 
 ## 0. Introduction
 Welcome to EconPy, your one-stop repository for Python scripts designed to make complex economic calculations a breeze. Dive into the world of investments, loans, and financial planning with our easy-to-use scripts.
@@ -148,6 +149,12 @@ It will completely detail an example of the balance over years when investing th
 ```bash
 python3 main_example_loan_vs_fund.py
 ```
-
 ![alt text](pictures/loan_example.png)
 ![alt text](pictures/loan_example_graph.png)
+
+## 5. IRPF Spain / Catalonia Calculator
+Python program to calculate the IRPF you will have to appy in a full year for your work.
+
+Really easy to use:
+- Introduce your `dirty_anual_wage`
+- Run to enjoy
