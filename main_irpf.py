@@ -1,6 +1,4 @@
 # pylint: skip-file
-# https://atc.gencat.cat/es/tributs/irpf/
-# https://taxdown.es/irpf/tabla-tramos/
 import utilities as ut
 
 #########################################################################################
@@ -8,8 +6,8 @@ import utilities as ut
 # Variables
 #
 #########################################################################################
-# Salario bruto anual
-dirty_anual_wage = 52174.44
+# Verbosity, dirty_anual_wage
+verbose, dirty_anual_wage = ut.parse_arguments()
 
 # Si True, se calcula el porcentaje sobre la base imponible, IRPF que descuenta empresa
 # Si False, se calcula sobre el salario bruto, IRPF total que te chuclan.
@@ -29,25 +27,27 @@ perc_sobre_base = False
 # Porcentaje seguridad social (va cambiando anualmente)
 PER_SS = 0.0647 # Contingencias comunes, desempleo y formación profesional
 
-# Tramos IRPF para el estado español (2025)
+# Tramos IRPF para el estado español (2026)
 app_irpf_sp = {
-    "tramo_1": {"min": 0, "max": 12500, "irpf": 0.095}, # min 0
-    "tramo_2": {"min": 12500, "max": 22000, "irpf": 0.125}, # min 1187.5
-    "tramo_3": {"min": 22000, "max": 33000, "irpf": 0.16}, # min 1187.5 + 1187 = 2374.5
-    "tramo_4": {"min": 33000, "max": 53000, "irpf": 0.19}, # min 1187.5 + 1187 + 1760 = 4135
-    "tramo_5": {"min": 53000, "max": 90000, "irpf": 0.215}, # min 1187.5 + 1187 + 1760 + 3800 = 7935
-    "tramo_6": {"min": 90000, "max": 120000, "irpf": 0.235}, # min 1187.5 + 1187 + 1760 + 3800 + 8050 = 15985
-    "tramo_7": {"min": 120000, "max": 175000, "irpf": 0.245}, # min 1187.5 + 1187 + 1760 + 3800 + 8050 + 7050 = 22940
-    "tramo_8": {"min": 175000, "max": float("inf"), "irpf": 0.255}, # min 1187.5 + 1187 + 1760 + 3800 + 8050 + 7050 + 13475 = 36415
+    "tramo_1": {"min": 0, "max": 12450, "irpf": 0.095},
+    "tramo_2": {"min": 12450, "max": 20200, "irpf": 0.12},
+    "tramo_3": {"min": 20200, "max": 35200, "irpf": 0.15},
+    "tramo_4": {"min": 35200, "max": 60000, "irpf": 0.185},
+    "tramo_5": {"min": 60000, "max": 300000, "irpf": 0.225},
+    "tramo_6": {"min": 300000, "max": float("inf"), "irpf": 0.245},
 }
 
-# Tramos IRPF para la comunidad autónoma Catalunya (2025)
+# Tramos IRPF para la comunidad autónoma Catalunya (2026)
 app_irpf_cat = {
-    "tramo_1": {"min": 0, "max": 6000, "irpf": 0.095}, # min 0
-    "tramo_2": {"min": 6000, "max": 50000, "irpf": 0.105}, # min 570
-    "tramo_3": {"min": 50000, "max": 200000, "irpf": 0.115}, # min 570 + 4620 = 5190
-    "tramo_4": {"min": 200000, "max": 300000, "irpf": 0.135}, # min 570 + 4620 + 17250 = 22440
-    "tramo_5": {"min": 300000, "max": float("inf"), "irpf": 0.14}, # min 570 + 4620 + 17250 + 13500 = 35940
+    "tramo_1": {"min": 0,       "max": 12450,       "irpf": 0.105},
+    "tramo_2": {"min": 12450,   "max": 17707,       "irpf": 0.12},
+    "tramo_3": {"min": 17707,   "max": 21000,       "irpf": 0.14},
+    "tramo_4": {"min": 21000,   "max": 33007,       "irpf": 0.15},
+    "tramo_5": {"min": 33007,   "max": 53407,       "irpf": 0.188},
+    "tramo_6": {"min": 53407,   "max": 90000,       "irpf": 0.215},
+    "tramo_7": {"min": 90000,   "max": 120000,      "irpf": 0.235},
+    "tramo_8": {"min": 120000,  "max": 175000,      "irpf": 0.245},
+    "tramo_9": {"min": 175000,  "max": float("inf"),"irpf": 0.255},
 }
 
 #########################################################################################
@@ -61,18 +61,25 @@ app_irpf_cat = {
 # Methods
 #
 #########################################################################################
-def calc_irpf(base, tramos):
+def calc_irpf(base, tramos, verbose):
     money_to_pay = 0
 
     for tramo_name, tramo in tramos.items():
+        tramo_money = 0
+
         if base > tramo["min"]:
             if base > tramo["max"]:
-                money_to_pay += (tramo["max"] - tramo["min"]) * tramo["irpf"]
+                tramo_money = (tramo["max"] - tramo["min"]) * tramo["irpf"]
             else:
-                money_to_pay += (base - tramo["min"]) * tramo["irpf"]
-        
-            print(f"{tramo_name}: {tramo}")
-            print(f"> Money to pay: {money_to_pay:,.2f} €".replace(",", " "))
+                tramo_money = (base - tramo["min"]) * tramo["irpf"]
+            
+            money_to_pay += tramo_money 
+
+            if verbose:
+                print("---")
+                print(f"{tramo_name}: {tramo}")
+                print(f"> Money to pay in this tramo: {tramo_money:,.2f} €".replace(",", " "))
+                print(f"> Accumulated money to pay: {money_to_pay:,.2f} €".replace(",", " "))
     
     return money_to_pay
 
@@ -94,11 +101,11 @@ print(f"---\nBase Imponible: {ut.format_es(base_imponible)} €\n---")
 
 # Calcular IRPF Estatal
 print("\nCalculando IRPF Estatal...")
-irpf_sp = calc_irpf(base_imponible, app_irpf_sp)
+irpf_sp = calc_irpf(base_imponible, app_irpf_sp, verbose)
 
 # Calcular IRPF Autonómico
 print("\nCalculando IRPF Autonómico...")
-irpf_cat = calc_irpf(base_imponible, app_irpf_cat)
+irpf_cat = calc_irpf(base_imponible, app_irpf_cat, verbose)
 
 # Total IRPF
 irpf_total = irpf_sp + irpf_cat

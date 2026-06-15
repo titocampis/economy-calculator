@@ -1,3 +1,36 @@
+import argparse
+def parse_arguments():
+    """
+    Parse command line arguments
+    """
+    
+    # Create the parser
+    parser = argparse.ArgumentParser(
+        description="Parse command line arguments for the TFM project"
+    )
+    
+    # Verbosity argument
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Enable verbosity"
+    )
+    
+    # Dirty wage argument
+    parser.add_argument(
+        "-w",
+        "--dirty-wage",
+        type=float,
+        required=True,  # falla si no se pasa -w
+        help="Dirty Anual Wage: -w 36500"
+    )
+    # Parse all arguments
+    args = parser.parse_args()
+
+    # 5. Return arguments
+    return args.verbose, args.dirty_wage
+
 def st(style: str, msg: str) -> str:
     """
     Method to format a string based on style.
